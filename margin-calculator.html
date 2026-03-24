@@ -1,1 +1,70 @@
-Add a data entry field for margin %, update calculations to enable: cost rate and margin % to calculate sell rate, sell rate and margin % to calculate cost rate, cost rate and sell rate to calculate margin %, and add a notes section specifying the calculations being used
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margin Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        label, input, button {
+            display: block;
+            margin: 10px 0;
+        }
+        #notes {
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Margin Calculator</h1>
+    <label for="costPrice">Cost Price:</label>
+    <input type="number" id="costPrice" placeholder="Enter cost price" required>
+
+    <label for="sellPrice">Sell Price:</label>
+    <input type="number" id="sellPrice" placeholder="Enter sell price" required>
+
+    <label for="marginPercentage">Margin Percentage:</label>
+    <input type="number" id="marginPercentage" placeholder="Enter margin percentage" required>
+
+    <button onclick="calculateMargin()">Calculate Margin</button>
+
+    <h2>Results</h2>
+    <p id="result"></p>
+
+    <div id="notes">
+        <h3>Notes:</h3>
+        <p>
+            - Margin Percentage = ((Sell Price - Cost Price) / Cost Price) * 100<br>
+            - Cost Price = Sell Price / (1 + (Margin Percentage / 100))<br>
+            - To calculate Cost Price, enter Sell Price and Margin Percentage.
+        </p>
+    </div>
+
+    <script>
+        function calculateMargin() {
+            const costPrice = parseFloat(document.getElementById('costPrice').value);
+            const sellPrice = parseFloat(document.getElementById('sellPrice').value);
+            const marginPercentage = parseFloat(document.getElementById('marginPercentage').value);
+            let result = '';
+
+            if (costPrice && sellPrice && marginPercentage) {
+                const calculatedMargin = ((sellPrice - costPrice) / costPrice) * 100;
+                result = `Calculated Margin Percentage: ${calculatedMargin.toFixed(2)}%`;
+            } else if (sellPrice && marginPercentage) {
+                const calculatedCostPrice = sellPrice / (1 + (marginPercentage / 100));
+                result = `Calculated Cost Price: $${calculatedCostPrice.toFixed(2)}`;
+            } else if (costPrice && sellPrice) {
+                const calculatedMarginPercent = ((sellPrice - costPrice) / costPrice) * 100;
+                result = `Calculated Margin Percentage: ${calculatedMarginPercent.toFixed(2)}%`;
+            } else {
+                result = 'Please fill in the required fields!';
+            }
+
+            document.getElementById('result').innerText = result;
+        }
+    </script>
+</body>
+</html>
