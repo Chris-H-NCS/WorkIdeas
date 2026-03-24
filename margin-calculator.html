@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margin Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            margin: 5px 0;
+            padding: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Margin Calculator</h1>
+    <label for="cost">Cost:</label>
+    <input type="number" id="cost" placeholder="Enter cost">
+    <label for="sellingPrice">Selling Price:</label>
+    <input type="number" id="sellingPrice" placeholder="Enter selling price">
+    <button onclick="calculateMargin()">Calculate Margin</button>
+    <h2 id="result"></h2>
+    <script>
+        function calculateMargin() {
+            const cost = parseFloat(document.getElementById('cost').value);
+            const sellingPrice = parseFloat(document.getElementById('sellingPrice').value);
+            if (!isNaN(cost) && !isNaN(sellingPrice) && sellingPrice > 0) {
+                const margin = ((sellingPrice - cost) / sellingPrice) * 100;
+                document.getElementById('result').textContent = `Margin: ${margin.toFixed(2)}%`;
+            } else {
+                document.getElementById('result').textContent = 'Please enter valid cost and selling price.';
+            }
+        }
+    </script>
+</body>
+</html>
