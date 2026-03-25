@@ -4,66 +4,299 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Margin Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --ncs-blue: #0072ce;
+            --ncs-teal: #00a88f;
+            --ink: #0b1a2b;
+            --panel: #f5fbff;
+            --white: #ffffff;
+            --line: #d6e8f6;
+            --danger: #cf2f3a;
+            --amber: #f6a400;
+            --success: #1f9a61;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Ubuntu", "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 12% 15%, rgba(0, 114, 206, 0.22), transparent 36%),
+                radial-gradient(circle at 90% 82%, rgba(0, 168, 143, 0.2), transparent 42%),
+                linear-gradient(140deg, #eaf7ff 0%, #f7fcff 45%, #ecfbf7 100%);
+            display: grid;
+            place-items: center;
+            padding: 28px 18px;
         }
-        label, input, button {
-            display: block;
-            margin: 10px 0;
+
+        .calculator {
+            width: min(760px, 100%);
+            border-radius: 22px;
+            background: var(--white);
+            border: 1px solid var(--line);
+            box-shadow: 0 24px 52px rgba(0, 44, 89, 0.14);
+            overflow: hidden;
+            animation: slideIn 480ms ease-out;
         }
-        #notes {
+
+        .header {
+            padding: 26px 28px;
+            background: linear-gradient(120deg, var(--ncs-blue) 0%, #1098d7 58%, var(--ncs-teal) 100%);
+            color: var(--white);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: clamp(1.5rem, 2.3vw, 2.1rem);
+            letter-spacing: 0.3px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            opacity: 0.95;
+            font-size: 0.97rem;
+        }
+
+        .content {
+            padding: 24px 28px 28px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        label {
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #16406a;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid #bddaf0;
+            border-radius: 12px;
+            padding: 11px 12px;
+            background: #f9fdff;
+            color: var(--ink);
+            font: inherit;
+            font-size: 0.97rem;
+            transition: border-color 180ms ease, box-shadow 180ms ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--ncs-blue);
+            box-shadow: 0 0 0 3px rgba(0, 114, 206, 0.16);
+        }
+
+        button {
+            margin-top: 16px;
+            border: 0;
+            border-radius: 999px;
+            padding: 12px 18px;
+            background: linear-gradient(95deg, var(--ncs-blue), var(--ncs-teal));
+            color: var(--white);
+            font: inherit;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            transition: transform 120ms ease, box-shadow 160ms ease;
+            box-shadow: 0 12px 20px rgba(0, 114, 206, 0.24);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 24px rgba(0, 114, 206, 0.28);
+        }
+
+        .results {
             margin-top: 20px;
-            font-size: 0.9em;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px 16px;
+        }
+
+        .results h2,
+        .notes h3 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+            color: #11406c;
+        }
+
+        #result {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.45;
+        }
+
+        .notes {
+            margin-top: 14px;
+            border-left: 4px solid var(--ncs-teal);
+            background: #f8fffc;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 0.92rem;
+        }
+
+        .notes p {
+            margin: 0;
+            line-height: 1.55;
+        }
+
+        .result-red {
+            color: white;
+            background-color: var(--danger);
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-weight: bold;
+        }
+        .result-amber {
+            color: #1e1400;
+            background-color: var(--amber);
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-weight: bold;
+        }
+        .result-green {
+            color: white;
+            background-color: var(--success);
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-weight: bold;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.99);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .header,
+            .content {
+                padding: 18px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Margin Calculator</h1>
-    <label for="costPrice">Cost Price:</label>
-    <input type="number" id="costPrice" placeholder="Enter cost price" required>
+    <main class="calculator">
+        <section class="header">
+            <h1>Margin Calculator</h1>
+            <p>Enter any two values and calculate the third with gross-margin formulas.</p>
+        </section>
 
-    <label for="sellPrice">Sell Price:</label>
-    <input type="number" id="sellPrice" placeholder="Enter sell price" required>
+        <section class="content">
+            <div class="grid">
+                <div class="field">
+                    <label for="costPrice">Cost Price</label>
+                    <input type="number" id="costPrice" placeholder="Enter cost price" required>
+                </div>
 
-    <label for="marginPercentage">Margin Percentage:</label>
-    <input type="number" id="marginPercentage" placeholder="Enter margin percentage" required>
+                <div class="field">
+                    <label for="sellPrice">Sell Price</label>
+                    <input type="number" id="sellPrice" placeholder="Enter sell price" required>
+                </div>
 
-    <button onclick="calculateMargin()">Calculate Margin</button>
+                <div class="field">
+                    <label for="marginPercentage">Margin Percentage</label>
+                    <input type="number" id="marginPercentage" placeholder="Enter margin percentage" required>
+                </div>
+            </div>
 
-    <h2>Results</h2>
-    <p id="result"></p>
+            <button onclick="calculateMargin()">Calculate</button>
 
-    <div id="notes">
-        <h3>Notes:</h3>
-        <p>
-            - Margin Percentage = ((Sell Price - Cost Price) / Cost Price) * 100<br>
-            - Cost Price = Sell Price / (1 + (Margin Percentage / 100))<br>
-            - To calculate Cost Price, enter Sell Price and Margin Percentage.
-        </p>
-    </div>
+            <section class="results">
+                <h2>Result</h2>
+                <p id="result"></p>
+            </section>
+
+            <section id="notes" class="notes">
+                <h3>Notes</h3>
+                <p>
+                    Margin % = ((Sell Price - Cost Price) / Sell Price) * 100<br>
+                    Cost Price = Sell Price * (1 - (Margin % / 100))<br>
+                    Sell Price = Cost Price / (1 - (Margin % / 100))<br>
+                    Margin % must be less than 100 when calculating Sell Price or Cost Price.
+                </p>
+            </section>
+        </section>
+    </main>
 
     <script>
+        function getMarginColor(marginPercent) {
+            if (marginPercent <= 20) {
+                return 'result-red';
+            } else if (marginPercent >= 25) {
+                return 'result-green';
+            } else {
+                return 'result-amber';
+            }
+        }
+
         function calculateMargin() {
             const costPrice = parseFloat(document.getElementById('costPrice').value);
             const sellPrice = parseFloat(document.getElementById('sellPrice').value);
             const marginPercentage = parseFloat(document.getElementById('marginPercentage').value);
+            const hasCost = Number.isFinite(costPrice);
+            const hasSell = Number.isFinite(sellPrice);
+            const hasMargin = Number.isFinite(marginPercentage);
             let result = '';
 
-            if (costPrice && sellPrice && marginPercentage) {
-                const calculatedMargin = ((sellPrice - costPrice) / costPrice) * 100;
-                result = `Calculated Margin Percentage: ${calculatedMargin.toFixed(2)}%`;
-            } else if (sellPrice && marginPercentage) {
-                const calculatedCostPrice = sellPrice / (1 + (marginPercentage / 100));
-                result = `Calculated Cost Price: $${calculatedCostPrice.toFixed(2)}`;
-            } else if (costPrice && sellPrice) {
-                const calculatedMarginPercent = ((sellPrice - costPrice) / costPrice) * 100;
-                result = `Calculated Margin Percentage: ${calculatedMarginPercent.toFixed(2)}%`;
+            if (hasSell && hasMargin && !hasCost) {
+                if (marginPercentage >= 100) {
+                    result = 'Margin Percentage must be less than 100.';
+                } else {
+                    const calculatedCostPrice = sellPrice * (1 - (marginPercentage / 100));
+                    result = `Calculated Cost Price: $${calculatedCostPrice.toFixed(2)}`;
+                }
+            } else if (hasCost && hasMargin && !hasSell) {
+                if (marginPercentage >= 100) {
+                    result = 'Margin Percentage must be less than 100.';
+                } else {
+                    const calculatedSellPrice = costPrice / (1 - (marginPercentage / 100));
+                    result = `Calculated Sell Price: $${calculatedSellPrice.toFixed(2)}`;
+                }
+            } else if (hasCost && hasSell && !hasMargin) {
+                const calculatedMarginPercent = ((sellPrice - costPrice) / sellPrice) * 100;
+                const colorClass = getMarginColor(calculatedMarginPercent);
+                result = `Calculated Margin Percentage: <span class="${colorClass}">${calculatedMarginPercent.toFixed(2)}%</span>`;
+            } else if (hasCost && hasSell && hasMargin) {
+                result = 'Please leave one field blank so it can be calculated.';
             } else {
-                result = 'Please fill in the required fields!';
+                result = 'Please enter any two values to calculate the third.';
             }
 
-            document.getElementById('result').innerText = result;
+            document.getElementById('result').innerHTML = result;
         }
     </script>
 </body>
